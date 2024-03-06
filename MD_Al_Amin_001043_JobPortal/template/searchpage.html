@@ -1,0 +1,30 @@
+{% extends "dashboard.html" %}
+
+{% block content %} 
+<section class="job-listings"> 
+    <h2>Your Search for {{query}}</h2> 
+    {% for i in jobs %}
+    <ul> 
+        <li> 
+            <h3>{{i.Job_title}}</h3> 
+            <p>{{i.Company}}</p> 
+            <p>{{i.Location}}</p> 
+            <p>{{i.Description}}</p>
+            <p>Time: {{i.create_at}}</p>
+            <p>Update at: {{i.update_at}}</p>
+            <p>Created By: {{i.job_creator}}</p>
+            {% if user.user_type == 'jobseeker' %} 
+            <a href="{% url 'applypage' i.id %}">Apply Now</a>
+            {% endif %} 
+
+            {% if user.user_type == 'recruiter' %} 
+            <a href="{% url 'editjob' i.id %}">Edit</a>
+            <a href="{% url 'deletepage' i.id %}">Delete</a>
+            {% endif %} 
+        </li> 
+    </ul> 
+   {% endfor %}
+</section> 
+
+
+{% endblock  %}

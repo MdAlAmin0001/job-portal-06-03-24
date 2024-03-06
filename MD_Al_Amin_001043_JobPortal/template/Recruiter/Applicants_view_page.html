@@ -1,0 +1,17 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% for i in job %}
+<div class="card">
+    <img src="/{{ i.applicant.profile_pic }}" class="card-img-top" alt="Applicant Photo">
+    <div class="card-body">
+        <h5 class="card-title">{{ i.job.Job_title }}</h5>
+        <p class="card-text">Resume: <a href="{{ i.apply_resume.url }}" target="_blank" >Download</a></p>
+        <h2>Skills:</h2>
+            <li>{{ i.skills }}</li>
+       
+        <a href="{% url 'see_profile' i.id %}" class="btn btn-primary">See Profile</a>
+        
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

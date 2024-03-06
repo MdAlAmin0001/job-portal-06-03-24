@@ -1,0 +1,153 @@
+{% extends "dashboard.html" %}
+{% block content %}
+    <div class="glassy-container">
+               
+        <img class="profile-picture" src="/{{request.user.profile_pic}}" alt="Profile Picture">
+        <h1>{{user.fullname }}</h1>
+        <h2>Username: {{user.username }}</h2>
+        <p>ID: {{user.id }}</p>
+        <p>User Type: {{user.user_type }}</p>
+        <p>Email: {{user.email }}</p>
+        <p>Phone: +1234567890</p>
+        <p>Present Address: City, Country</p>
+        <p>Permanent Address: City, Country</p>
+        <p>Gender: Male</p>
+        <p>Portfolio Link: <a href="#">portfolio.com</a></p>
+        <p>Previous Job: Company Name</p>
+        <p>Job Experience: 5 years</p>
+        <p>Resume: <a href="#">Download Resume</a></p>
+        <h2>Skills:</h2>
+        <ul class="skills-list">
+            <li>Skill 1</li>
+            <li>Skill 2</li>
+            <li>Skill 3</li>
+        </ul>
+        <p>Signature: <img src="signature.png" alt="Signature" style="width: 100px; height: auto;"></p>
+        <p>Cover Letter: Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+        <p>Expected Salary: $70,000</p>
+        
+        <button class="edit-profile-button" onclick="toggleForm()">Edit Profile</button>
+
+        <div class="form-container">
+            <form>
+                <div class="form-input">
+                    <label for="ID">ID:</label>
+                    <input type="text" value="{{ user.id }}" id="id" name="id" required>
+                </div>
+                <div class="form-input">
+                    <label for="fullName">First Name:</label>
+                    <input type="text" value="{{ user.fname }}" id="firstname" name="firstname" required>
+                </div>
+                <div class="form-input">
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" value="{{ user.lname }}" id="lastname" name="lastname" required>
+                </div>
+                <div class="form-input">
+                    <label for="fullName">Full Name:</label>
+                    <input type="text" value="{{ user.fullname }}" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-input">
+                    <label for="userName">Username:</label>
+                    <input type="text" value="{{ user.username }}" id="userName" name="userName" required readonly>
+                </div>
+                
+                <div class="form-input">
+                    <label for="email">Email:</label>
+                    <input type="email" value="{{ user.email }}" id="email" name="email" required>
+                </div>
+                <div class="form-input">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" value="{{ user.phone }}" id="phone" name="phone" required>
+                </div>
+                <div class="form-input">
+                    <label for="presentAddress">Present Address:</label>
+                    <input type="text" value="{{ user.present_address }}" id="presentAddress" name="presentAddress" required>
+                </div>
+                <div class="form-input">
+                    <label for="permanentAddress">Permanent Address:</label>
+                    <input type="text" value="{{ user.permanent_address }}" id="permanentAddress" name="permanentAddress" required>
+                </div>
+                <div class="form-input">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" value="{{ user.gender }}" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="portfolioLink">Portfolio Link:</label>
+                    <input type="url" id="portfolioLink" value="{{ user.portfolio_link }}" name="portfolioLink">
+                </div>
+                <div class="form-input">
+                    <label for="previousJob">Previous Job:</label>
+                    <input type="text" value="{{ user.previous_job }}" id="previousJob" name="previousJob">
+                </div>
+                <div class="form-input">
+                    <label for="jobExperience">Job Experience:</label>
+                    <input type="text" value="{{ user.job_experience }}" id="jobExperience" name="jobExperience">
+                </div>
+                <div class="form-input">
+                    <label for="resume">Resume:</label>
+                    <input type="file" value="{{ user.resume }}" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                </div>
+                <div class="form-input">
+                    <label for="skills">Skills:</label>
+                    <input type="text" value="{{ user.skills }}" id="skills" name="skills">
+                </div>
+                <div class="form-input">
+                    <label for="signature">Signature:</label>
+                    <input type="file" value="/{{ user.signature }}" id="signature" name="signature" accept=".png,.jpg,.jpeg">
+                </div>
+                <div class="form-input">
+                    <label for="coverLetter">Cover Letter:</label>
+                    <textarea id="coverLetter" name="coverLetter" rows="4">{{ user.cover_letter }}</textarea>
+                </div>
+                <div class="form-input">
+                    <label for="expectedSalary">Expected Salary:</label>
+                    <input type="text" value="{{ user.expected_salary }}" id="expectedSalary" name="expectedSalary">
+                </div>
+                <div class="inputbox">
+                    <span>Password</span>
+                    <input type="password" name="password" required="required">
+                    
+                    <i></i>
+                </div>
+                <button type="submit">Save Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            var formContainer = document.querySelector('.form-container');
+            formContainer.style.display = (formContainer.style.display === 'none' || formContainer.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+    </div>
+    <section class="job-listings"> 
+        <h2>Latest Job Listings</h2>
+    {% for i in bp %}
+
+    <ul> 
+        <li> 
+            <h3>{{i.Job_title}}</h3> 
+            <p>{{i.Company}}</p> 
+            <p>{{i.Location}}</p> 
+            <p>{{i.Description}}</p>
+            <p>Time: {{i.create_at}}</p>
+            <p>Created By: {{i.job_creator}}</p>
+            {% if user.user_type == 'jobseeker' %} 
+            <a href="{% url 'applypage' i.id %}">Apply Now</a>
+            {% endif %} 
+
+            {% if user.user_type == 'recruiter' %} 
+            <a href="{% url 'editjob' i.id %}">Edit</a>
+            <a href="{% url 'deletepage' i.id %}">Delete</a>
+            {% endif %} 
+        </li> 
+    </ul> 
+
+    {% endfor %}
+    
+{% endblock content %}

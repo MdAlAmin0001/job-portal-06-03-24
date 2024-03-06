@@ -1,0 +1,39 @@
+{% extends "dashboard.html" %}
+{% block content %}
+<form action="{% url 'addjobpage' %}" method="POST">
+    {% csrf_token %}
+    <h2>Add Job</h2>
+
+    <label for="jobTitle">Job Title:</label>
+    <input type="text" id="jobTitle" name="jobTitle" required>
+
+    <label for="company">Company:</label>
+    <input type="text" id="company" name="company" required>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+    
+    <label for="requiredSkills">Required Skills:</label>
+    <select id="requiredSkills" name="requiredSkills" required>
+        <option value="" disabled selected>Select a Skill</option>
+        <option value="PYTHON">Python</option>
+        <option value="JAVA">Java</option>
+        <option value="PHP">PHP</option>
+    </select>
+    
+    <label for="category">Category:</label>
+    <select id="category" name="category" required>
+        <option value="" disabled selected>Select a Category</option>
+        <option value="FULL-TIME">Full-Time</option>
+        <option value="PART-Time">Part-Time</option>
+    </select>
+    
+    <label for="openings">Number of Openings:</label>
+    <input type="number" id="openings" name="openings" required>
+
+    <button type="submit">Add Job</button>
+</form>
+{% endblock %}

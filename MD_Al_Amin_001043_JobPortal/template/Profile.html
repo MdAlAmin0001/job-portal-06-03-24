@@ -1,0 +1,263 @@
+{% extends "dashboard.html" %}
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags == 'error' %}
+        <div id="error-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('error-modal')">&times;</span>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% elif message.tags == 'success' %}
+        <div id="success-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('success-modal')">&times;</span>
+                <p>{{ message }}</p>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
+    <div class="glassy-container">              
+        <img class="profile-picture" src="/{{request.user.profile_pic}}" alt="Profile Picture">
+        <h1>{{user.fullname }}</h1>
+        <h2>Username: {{user.username }}</h2>
+        <p>ID: {{user.id }}</p>
+        <p>User Type: {{user.user_type }}</p>
+        <p>Email: {{user.email }}</p>
+        <p>Phone: {{user.phone }}</p>
+        {% if user.user_type == 'recruiter' %}
+        <p>Company Name: {{user.Recruiterprofile.companyname }}</p>
+        {% endif %}
+        {% if user.user_type == 'jobseeker' %}
+        <p>Present Address: {{ user.Jobseekerprofile.present_address }}</p>
+        <p>Permanent Address: {{ user.Jobseekerprofile.permanent_address }}</p>
+        <p>Gender: {{ user.Jobseekerprofile.gender }}</p>
+        <p>Resume: <a href="/{{ user.Jobseekerprofile.resume }}" target="_blank">View Resume</a></p>
+        <h2>Skills: {{user.Jobseekerprofile.skills}} </h2>
+        
+        <p>Expected Salary: {{ user.Jobseekerprofile.expected_salary }}</p>
+        {% endif %}
+
+        <button class="edit-profile-button" onclick="toggleForm()">Edit Profile</button>
+        <!--changepassword work start-->
+        <div class="change-password-container">
+            <button class="change-password-button" onclick="togglePasswordForm()">Change Password</button>
+        
+            <div id="password-form" class="password-form">
+                <form method="POST" action="{% url 'changepassword' %}">
+                    {% csrf_token %}
+                    <div class="form-input">
+                        <label for="current-password">Current Password:</label>
+                        <input type="password" id="current-password" name="current_password" required>
+                    </div>
+                    <div class="form-input">
+                        <label for="new-password">New Password:</label>
+                        <input type="password" id="new-password" name="new_password" required>
+                    </div>
+                    <div class="form-input">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <input type="password" id="confirm-password" name="confirm_password" required>
+                    </div>
+                    <button type="submit">Change Password</button>
+                </form>
+            </div>
+        </div>
+        <script>
+            function togglePasswordForm() {
+                var passwordForm = document.getElementById('password-form');
+                passwordForm.style.display = (passwordForm.style.display === 'none' || passwordForm.style.display === '') ? 'block' : 'none';
+            }
+        </script>
+        <script>
+            function toggleForm() {
+                var formContainer = document.querySelector('.form-container');
+                formContainer.style.display = (formContainer.style.display === 'none' || formContainer.style.display === '') ? 'block' : 'none';
+            }
+        
+            function closeModal(modalId) {
+                var modal = document.getElementById(modalId);
+                modal.style.display = 'none';
+            }
+        
+            function showErrorModal(errorMessage) {
+                var errorModal = document.getElementById('error-modal');
+                var modalContent = errorModal.querySelector('.modal-content p');
+                modalContent.textContent = errorMessage;
+                errorModal.style.display = 'block';
+        
+                // Automatically close the error modal after a few seconds
+                setTimeout(function() {
+                    errorModal.style.display = 'none';
+                }, 5000);  // Adjust the duration (in milliseconds) as needed
+            }
+        </script>
+        <!-- change password work end-->
+        
+        
+
+        <div class="form-container">
+            
+            <form method="POST" action="{% url 'editprofilepage' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-input">
+                    <label for="ID">ID:</label>
+                    <input type="text" value="{{ user.id }}" id="id" name="id" required>
+                </div>
+                <div class="form-input">
+                    <label for="fullName">First Name:</label>
+                    <input type="text" value="{{ user.fname }}" id="firstname" name="firstname" required>
+                </div>
+                <div class="form-input">
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" value="{{ user.lname }}" id="lastname" name="lastname" required>
+                </div>
+                <div class="form-input">
+                    <label for="fullName">Full Name:</label>
+                    <input type="text" value="{{ user.fullname }}" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-input">
+                    <label for="userName">Username:</label>
+                    <input type="text" value="{{ user.username }}" id="userName" name="userName" required readonly>
+                </div>
+                
+                <div class="form-input">
+                    <label for="email">Email:</label>
+                    <input type="email" value="{{ user.email }}" id="email" name="email" required>
+                </div>
+                <div class="form-input">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" value="{{ user.phone }}" id="phone" name="phone" required>
+                </div>
+                <div class="form-input">
+                    <label for="image">Profile image:</label>
+                    <input type="file" value="/{{request.user.profile_pic}}" id="image" name="image" required>
+                </div>
+                {% if user.user_type == 'recruiter' %}
+                <div class="form-input">
+                    <label for="companyname">Company Name:</label>
+                    <input type="text" value="{{ user.Recruiterprofile.companyname }}" id="companyname" name="companyname" required>
+                </div>
+                {% endif %}
+                {% if user.user_type == 'jobseeker' %}
+                <div class="form-input">
+                    <label for="presentAddress">Present Address:</label>
+                    <input type="text" value="{{ user.Jobseekerprofile.present_address }}" id="presentAddress" name="present_address" required>
+                </div>
+                <div class="form-input">
+                    <label for="permanent_address">Permanent Address:</label>
+                    <input type="text" value="{{ user.Jobseekerprofile.permanent_address }}" id="permanent_address" name="permanent_address" required>
+                </div>
+                <div class="form-input">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender">
+                        <option value="male" {% if user.Jobseekerprofile.gender == 'male' %}selected{% endif %}>Male</option>
+                        <option value="female" {% if user.Jobseekerprofile.gender == 'female' %}selected{% endif %}>Female</option>
+                        <option value="other" {% if user.Jobseekerprofile.gender == 'other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="resume">Resume:</label>
+                    <input type="file" value="{{ user.Jobseekerprofile.resume }}" id="resume" name="resume" accept=".pdf,.doc,.docx">
+                </div>
+                <div class="form-input">
+                    <label for="skills">Skills:</label>
+                    <select id="skills" name="skills">
+                        <option value="Python" {% if user.Jobseekerprofile.skills == 'Python' %}selected{% endif %}>Python</option>
+                        <option value="Java" {% if user.Jobseekerprofile.skills == 'Java' %}selected{% endif %}>Java</option>
+                        <option value="Php" {% if user.Jobseekerprofile.skills == 'Php' %}selected{% endif %}>Php</option>
+                    </select>
+                </div>
+                <div class="form-input">
+                    <label for="expectedSalary">Expected Salary:</label>
+                    <input type="text" value="{{ user.Jobseekerprofile.expected_salary }}" id="expectedSalary" name="expected_salary">
+                </div>
+             {% endif %}
+                <div class="inputbox">
+                    <span>Password</span>
+                    <input type="password" name="password" required="required">
+                </div>
+                <button type="submit">Save Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            var formContainer = document.querySelector('.form-container');
+            formContainer.style.display = (formContainer.style.display === 'none' || formContainer.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+    </div>
+    {% if user.user_type == 'recruiter' %}
+    <section class="job-listings"> 
+        <h2>Latest Job Listings</h2>
+        {% for i in job_posts %}
+            <ul> 
+                <li> 
+                    <h3>{{ i.Job_title }}</h3> 
+                    <p>{{ i.Company }}</p> 
+                    <p>{{ i.Location }}</p> 
+                    <p>{{ i.Description }}</p>
+                    <p>Time: {{ i.create_at }}</p>
+                    <p>Created By: {{ i.job_creator.fullname }}</p>
+                    <a href="{% url 'editjob' i.id %}">Edit</a>
+                    <a href="{% url 'deletepage' i.id %}">Delete</a>
+                    <a href="{% url 'Applicants_view_page' i.id %}">Applicants</a>
+                </li> 
+            </ul> 
+        {% endfor %}
+    </section>
+{% endif %}
+
+{% if user.user_type == 'jobseeker' %}
+<section class="job-listings"> 
+    <h2>Applied Job</h2>
+    {% for i in applied_jobs %}
+        <ul> 
+            <li> 
+                <h3>{{ i.job.Job_title }}</h3> 
+                <p>{{ i.job.Company }}</p> 
+                <p>{{ i.job.Location }}</p> 
+                <p>{{ i.job.Description }}</p>
+                <p>Time: {{ i.job.create_at }}</p>
+                <p>Created By: {{ i.job.job_creator.fullname }}</p>
+            </li> 
+        </ul> 
+        {% endfor %}
+    </section>
+{% endif %}
+
+    
+    <script>
+        function toggleForm() {
+            var formContainer = document.querySelector('.form-container');
+            formContainer.style.display = (formContainer.style.display === 'none' || formContainer.style.display === '') ? 'block' : 'none';
+        }
+
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = 'none';
+        }
+
+        // Automatically close modals after a few seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            var errorModal = document.getElementById('error-modal');
+            var successModal = document.getElementById('success-modal');
+
+            if (errorModal) {
+                setTimeout(function() {
+                    errorModal.style.display = 'none';
+                }, 5000);  // Adjust the duration (in milliseconds) as needed
+            }
+
+            if (successModal) {
+                setTimeout(function() {
+                    successModal.style.display = 'none';
+                }, 5000);  // Adjust the duration (in milliseconds) as needed
+            }
+        });
+    </script>
+    
+{% endblock content %}

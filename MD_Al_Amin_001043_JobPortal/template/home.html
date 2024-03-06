@@ -1,0 +1,46 @@
+{% extends "dashboard.html" %}
+{% block content %}
+<style>
+    .related-jobs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .related-jobs li {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+    .related-jobs li h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    .related-jobs li p {
+        margin: 5px 0;
+    }
+    .no-jobs {
+        font-style: italic;
+    }
+</style>
+
+<h2>Related Jobs</h2>
+<ul class="related-jobs">
+  {% for job in recommended_jobs %}
+    <li>
+        <h3>{{ job.Job_title }}</h3>
+        <p>Company: {{ job.Company }}</p>
+        <p>Company: {{ job.catagory }}</p>
+        <p>Location: {{ job.Location }}</p>
+        <p>Description: {{ job.Description }}</p>
+        <!-- Add more job details as needed -->
+    </li>
+  {% empty %}
+    <li class="no-jobs">No matching jobs found.</li>
+  {% endfor %}
+</ul>
+
+{% if user.jobseekerprofile.skills == addjob_Model.required_skills %}
+
+{% endif %}
+{% endblock %}
